@@ -2,24 +2,36 @@ package main
 
 import (
 	"log"
+	"encoding/json"
 	"gopkg.in/telegram-bot-api.v4"
 	"bot/sqli"
 	"fmt"
-	"reflect"
+	"io/ioutil"
+	"os"
 )
-
+type Settings struct {
+    Api string
+}
 func main() {
+	    file, e := ioutil.ReadFile("./config.json")
+    if e != nil {
+        fmt.Printf("File error: %v\n", e)
+        os.Exit(1)
+    }
+    fmt.Printf("%s\n", string(file))
+
+    	//m := new(Dispatch)
+    	//var m interface{}
+    	var settings Settings
+	json.Unmarshal(file, &settings)
+	fmt.Printf("Results: %v\n", settings)
 	dba := sql.Getdb()
-	fooType := reflect.TypeOf(dba)
-	for i := 0; i < fooType.NumMethod(); i++ {
-    		method := fooType.Method(i)
-    		fmt.Println(method.Name)
-	}
+
 	dba.Emptydb()
 	
-	fmt.Println(fooType)
 	fmt.Println(dba)
-	bot, err := tgbotapi.NewBotAPI("281611909:AAEszBrE92Ok5W7WL1Qxcx6rY2zNNS5lGkw")
+	bot, err := tgbotapi.NewBotAPI(settings.Api)
+	
 	if err != nil {
 		log.Panic(err)
 	}
