@@ -14,18 +14,18 @@ func main() {
 	dba := sql.Getdb()
 	dba.Emptydb()
 	fmt.Println(dba)
-	    file, e := ioutil.ReadFile("./config.json")
-    if e != nil {
-        fmt.Printf("File error: %v\n", e)
-        os.Exit(1)
-    }
-    fmt.Printf("%s\n", string(file))
+	file, e := ioutil.ReadFile("./config.json")
+	if e != nil {
+		fmt.Printf("File error: %v\n", e)
+		os.Exit(1)
+	}
+	fmt.Printf("%s\n", string(file))
 
-    	//m := new(Dispatch)
-    	//var m interface{}
+	//m := new(Dispatch)
+	//var m interface{}
 	botSetup := settings.GetSettings()
 	bot, err := tgbotapi.NewBotAPI(botSetup.Api)
-	
+
 	if err != nil {
 		log.Panic(err)
 	}
@@ -47,7 +47,7 @@ func main() {
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 		m := sql.Message{update.Message.Chat.ID, update.Message.MessageID, update.Message.From.UserName, update.Message.Text}
 		m.Save()
-		if update.Message.Chat.ID != -1001050885996{
+		if update.Message.Chat.ID != -1001050885996 {
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 			msg.ReplyToMessageID = update.Message.MessageID
 			bot.Send(msg)

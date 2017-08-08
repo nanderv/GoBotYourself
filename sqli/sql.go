@@ -7,14 +7,13 @@ import (
 	//"fmt"
 	//"reflect"
 )
-type DB struct{
+
+type DB struct {
 	name string
-	db *sql.DB
+	db   *sql.DB
 }
 
-
-
-func (dba DB) Emptydb(){
+func (dba DB) Emptydb() {
 	db := dba.db
 
 	sqlStmt := `
@@ -30,23 +29,19 @@ func (dba DB) Emptydb(){
 func (dba DB) StoreMessage() {
 
 }
+
 var myDB DB
+
 func Getdb() DB {
-	if myDB.name != ""{
+	if myDB.name != "" {
 		return myDB
 	}
 
 	db, err := sql.Open("sqlite3", "./foo.db")
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 
-	//dbb := DB{"simpleDB",db}
-	//fooType := reflect.TypeOf(dbb)
-	//for i := 0; i < fooType.NumMethod(); i++ {
-	 //   method := fooType.Method(i)
-	 //   fmt.Println(method.Name)
-	//}
-	myDB = DB{"simpleDB",db}
+	myDB = DB{"simpleDB", db}
 	return myDB
 }
