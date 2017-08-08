@@ -9,11 +9,10 @@ import (
 	"io/ioutil"
 	"os"
 )
-type Settings struct {
-    Api string
-}
+
 func main() {
 	dba := sql.Getdb()
+	dba.Emptydb()
 	fmt.Println(dba)
 	    file, e := ioutil.ReadFile("./config.json")
     if e != nil {
@@ -46,11 +45,12 @@ func main() {
 		}
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+		m := sql.Message{update.Message.Chat.ID, update.Message.MessageID, update.Message.From.UserName, update.Message.Text}
+		m.Save()
 		if update.Message.Chat.ID != -1001050885996{
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-		msg.ReplyToMessageID = update.Message.MessageID
-
-		bot.Send(msg)
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+			msg.ReplyToMessageID = update.Message.MessageID
+			bot.Send(msg)
 		}
 	}
 }

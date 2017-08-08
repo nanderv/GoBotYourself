@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
-	"os"
 	//"fmt"
 	//"reflect"
 )
@@ -12,16 +11,14 @@ type DB struct{
 	name string
 	db *sql.DB
 }
-func (r DB) Perim() string {
-    return r.name
-}
+
+
+
 func (dba DB) Emptydb(){
- 	os.Remove("./foo.db")
-	db := dba.db	
+	db := dba.db
 
 	sqlStmt := `
-	create table msgs (id integer not null primary key, messageID integer not null, chatID integer not Null, userName text, content text);
-	delete from msgs;
+	create table IF NOT EXISTS Messages (id integer not null primary key, messageID integer not null, chatID integer not Null, userName text, content text);
 	`
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
@@ -30,8 +27,14 @@ func (dba DB) Emptydb(){
 	}
 
 }
+func (dba DB) StoreMessage() {
+
+}
+var myDB DB
 func Getdb() DB {
-	os.Remove("./foo.db")
+	if myDB.name != ""{
+		return myDB
+	}
 
 	db, err := sql.Open("sqlite3", "./foo.db")
 	if err != nil{
@@ -44,5 +47,6 @@ func Getdb() DB {
 	 //   method := fooType.Method(i)
 	 //   fmt.Println(method.Name)
 	//}
-	return DB{"simpleDB",db}
+	myDB = DB{"simpleDB",db}
+	return myDB
 }

@@ -1,24 +1,24 @@
 package settings
 
 import (
-"encoding/json"
-"fmt"
-"io/ioutil"
-"os"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"os"
 )
 type Settings struct {
-Api string
+	Api string
 }
-func GetSettings() Settings{
-	file, e := ioutil.ReadFile("./config.json")
+func loadFile(filename string) []byte{
+	file, e := ioutil.ReadFile(filename)
 	if e != nil {
 		fmt.Printf("File error: %v\n", e)
 		os.Exit(1)
 	}
-
-	//m := new(Dispatch)
-	//var m interface{}
+	return file
+}
+func GetSettings() Settings{
 	var settings Settings
-	json.Unmarshal(file, &settings)
+	json.Unmarshal(loadFile("./config.json"), &settings)
 	return settings
 }
