@@ -50,10 +50,12 @@ func main() {
 		m := sql.Message{update.Message.Chat.ID, update.Message.MessageID, update.Message.From.UserName, update.Message.Text}
 		fmt.Println(reflect.TypeOf(update))
 		m.Save()
-			for _, Mod := range anythinggoes.MOD{
-				if Mod.Condition(update, bot){
+		if update.Message.Chat.ID != -1001050885996 {
+			for _, Mod := range anythinggoes.MOD {
+				if Mod.Condition(update, bot) {
 					Mod.Run(update, bot)
 				}
 			}
+		}
 	}
 }
