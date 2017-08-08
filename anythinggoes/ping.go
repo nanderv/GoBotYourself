@@ -5,7 +5,7 @@ import ("gopkg.in/telegram-bot-api.v4"
 	"bot/gofuckyourself"
 )
 
-func run(update tgbotapi.Update, bot *tgbotapi.BotAPI){
+func run(update tgbotapi.Update, bot *tgbotapi.BotAPI) string{
 	str := ""
 	for _, field := range strings.Fields(update.Message.Text){
 		if field =="ping"{
@@ -14,11 +14,9 @@ func run(update tgbotapi.Update, bot *tgbotapi.BotAPI){
 			str = str + " "+field
 		}
 	}
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, str)
-	msg.ReplyToMessageID = update.Message.MessageID
-	bot.Send(msg)
+	return str
 }
 var Ping Module = Module{"ping",
   "Says pong",
   gofuckyourself.Contains("ping"),
-  run}
+  gofuckyourself.Replier(run)}
