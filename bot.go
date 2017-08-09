@@ -29,6 +29,8 @@ func main() {
 	bot, err := tgbotapi.NewBotAPI(botSetup.Api)
 	anythinggoes.MOD["ping"] = anythinggoes.Ping
 	anythinggoes.MOD["store"] = anythinggoes.Store
+	anythinggoes.MOD["nsapi"] = anythinggoes.NSApi
+
 	if err != nil {
 		log.Panic(err)
 	}

@@ -10,3 +10,14 @@ func Replier(fun func(tgbotapi.Update, *tgbotapi.BotAPI) string) func(tgbotapi.U
 		bot.Send(msg)
 	}
 }
+func IFReplier(fun func(tgbotapi.Update, *tgbotapi.BotAPI) (string, bool)) func(tgbotapi.Update, *tgbotapi.BotAPI) {
+	return func(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
+		str, b := fun(update, bot)
+		if !b {
+			return
+		}
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, str)
+		msg.ReplyToMessageID = update.Message.MessageID
+		bot.Send(msg)
+	}
+}

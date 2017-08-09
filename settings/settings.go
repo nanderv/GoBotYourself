@@ -8,7 +8,9 @@ import (
 )
 
 type Settings struct {
-	Api string
+	Api       string
+	NSAPIUSER string
+	NSAPIPASS string
 }
 
 func loadFile(filename string) []byte {

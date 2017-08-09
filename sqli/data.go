@@ -49,7 +49,7 @@ func (d Data) Save() {
 	tx.Commit()
 }
 
-func (d Data) LoadData( chatID int64, moduleName string, variable string) Data {
+func (d Data) LoadData(chatID int64, moduleName string, variable string) Data {
 	db := Getdb().db
 	fmt.Print(moduleName)
 

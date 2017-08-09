@@ -7,7 +7,7 @@ import (
 	"bot/sqli"
 )
 
-func store(update tgbotapi.Update, _ *tgbotapi.BotAPI) string {
+func store(update tgbotapi.Update, _ *tgbotapi.BotAPI) (string, bool) {
 
 	var variable string
 	var variablerec string
@@ -19,15 +19,15 @@ func store(update tgbotapi.Update, _ *tgbotapi.BotAPI) string {
 	case int1 == 2:
 		d := sql.Data{0, false, update.Message.Chat.ID, "store", variable, text}
 		d.Save()
-		return "Data stored"
-	case int2 == 1:   d := sql.Data{}.LoadData(update.Message.Chat.ID, Store.Name, variablerec)
-		return d.Data
+		return "Data stored", true
+	case int2 == 1:   d := sql.Data{}.LoadData(update.Message.Chat.ID, "store", variablerec)
+		return d.Data, true
 	}
 
-	return ""
+	return "", false
 }
 
 var Store Module = Module{"store",
 	"store value using /store, retrieve using /retreive",
 	gofuckyourself.RunAlways,
-	gofuckyourself.Replier(store)}
+	gofuckyourself.IFReplier(store)}
