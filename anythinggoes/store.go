@@ -15,7 +15,7 @@ func store(update tgbotapi.Update, _ *tgbotapi.BotAPI) (string, bool) {
 	int1, _ := fmt.Sscanf(update.Message.Text, "/store %v %v", &variable, &text)
 	int2, _ := fmt.Sscanf(update.Message.Text, "/receive %v", &variablerec)
 
-	switch true{
+	switch{
 	case int1 == 2:
 		d := sql.Data{0, false, update.Message.Chat.ID, "store", variable, text}
 		d.Save()

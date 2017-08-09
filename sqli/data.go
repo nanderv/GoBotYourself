@@ -32,7 +32,6 @@ func (d Data) Save() {
 		if err != nil {
 			log.Fatal(err)
 		}
-
 	} else {
 		// update
 		stmt, err := tx.Prepare("update Data SET data = ? WHERE chatID = ? and moduleName = ? and variable = ?)")

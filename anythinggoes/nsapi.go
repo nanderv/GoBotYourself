@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"encoding/xml"
 	"time"
+	"strings"
 )
 
 type customTime struct {
@@ -19,7 +20,7 @@ type customTime struct {
 func (c *customTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var v string
 	d.DecodeElement(&v, &start)
-	parse, err := time.Parse("2006-01-02T15:04:05+0200", v)
+	parse, err := time.Parse("2006-01-02T15:04:05-0700", v)
 	if err != nil {
 		return err
 	}
@@ -36,7 +37,8 @@ type JourneyStop struct {
 	Spoor string
 }
 type JourneyPart struct {
-	ReisStop []JourneyStop
+	ReisStop  []JourneyStop
+	RitNummer string
 }
 type JourneyOption struct {
 	AantalOverstappen int
@@ -52,13 +54,12 @@ func redirectPolicyFunc(req *http.Request, _ []*http.Request) error {
 	req.Header.Add("Authorization", "Basic " + basicAuth(settings.GetSettings().NSAPIUSER, settings.GetSettings().NSAPIPASS))
 	return nil
 }
-func nsapi(update tgbotapi.Update, _ *tgbotapi.BotAPI) (string, bool) {
-
+func nsapi(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	var from string
 	var to string
 	_, err := fmt.Sscanf(update.Message.Text, "/travel %v %v", &from, &to)
 	if err != nil {
-		return err.Error(), false
+		return
 	}
 	client := &http.Client{
 		Jar: nil,
@@ -70,38 +71,56 @@ func nsapi(update tgbotapi.Update, _ *tgbotapi.BotAPI) (string, bool) {
 	body := resp.Body
 	b, err := ioutil.ReadAll(body)
 
-	boop := JourneyOptions{}
-
-	err = xml.Unmarshal(b, &boop)
+	journey := JourneyOptions{}
+	err = xml.Unmarshal(b, &journey)
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(boop)
-	timeLocation, err := time.LoadLocation("Europe/Budapest")
+	timeLocation, err := time.LoadLocation("Europe/Amsterdam")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(boop)
-	for _, loc := range boop.ReisMogelijkheid {
-		str := "Journey possible:\n\n"
-
+	for _, loc := range journey.ReisMogelijkheid {
+		str := "Journey possible:\n\n```"
+		var stationLength int
+		stationLength = 0
 		for _, leg := range loc.ReisDeel {
-			str += "\n"
 
 			for _, station := range leg.ReisStop {
-				str += station.Naam + " " + station.Tijd.In(timeLocation).Format("15:04") + "  " + station.Spoor + "\n"
+				if len(station.Naam) > stationLength {
+					stationLength = len(station.Naam)
+				}
+			}
+		}
+		if loc.ReisDeel[0].ReisStop[0].Tijd.Time.In(timeLocation).Sub(time.Now()) > 0 {
+
+			for _, leg := range loc.ReisDeel {
+				str += "\n" + leg.RitNummer + "\n"
+
+				for _, station := range leg.ReisStop {
+					str += station.Naam
+					str += strings.Repeat(" ", stationLength + 1 - len(station.Naam))
+					str += station.Tijd.In(timeLocation).Format("15:04") + "	" + station.Spoor + "\n"
+
+				}
 
 			}
-
+			str += "```"
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, str)
+			msg.ParseMode = "MarkDown"
+			msg.ReplyToMessageID = update.Message.MessageID
+			bot.Send(msg)
+			return
+		} else {
+			fmt.Println(loc)
 		}
 
-		return str, true
 	}
-	return " ", false
+
 }
 
 var NSApi Module = Module{"nsapi",
 	"store value using /store, retrieve using /retreive",
 	gofuckyourself.RunAlways,
-	gofuckyourself.IFReplier(nsapi)}
+	nsapi}
 
