@@ -28,6 +28,7 @@ func main() {
 	botSetup := settings.GetSettings()
 	bot, err := tgbotapi.NewBotAPI(botSetup.Api)
 	anythinggoes.MOD["ping"] = anythinggoes.Ping
+	anythinggoes.MOD["store"] = anythinggoes.Store
 	if err != nil {
 		log.Panic(err)
 	}

@@ -15,6 +15,7 @@ func run(update tgbotapi.Update, _ *tgbotapi.BotAPI) string {
 			str = str + " " + field
 		}
 	}
+
 	return str
 }
 
