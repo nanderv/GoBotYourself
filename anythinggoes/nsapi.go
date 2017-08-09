@@ -19,7 +19,7 @@ type customTime struct {
 func (c *customTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	var v string
 	d.DecodeElement(&v, &start)
-	parse, err := time.Parse("2006-01-02T15:04:05-0700", v)
+	parse, err := time.Parse("2006-01-02T15:04:05+0200", v)
 	if err != nil {
 		return err
 	}
@@ -77,13 +77,19 @@ func nsapi(update tgbotapi.Update, _ *tgbotapi.BotAPI) (string, bool) {
 		fmt.Println(err)
 	}
 	fmt.Println(boop)
+	timeLocation, err := time.LoadLocation("Europe/Budapest")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(boop)
 	for _, loc := range boop.ReisMogelijkheid {
 		str := "Journey possible:\n\n"
 
 		for _, leg := range loc.ReisDeel {
 			str += "\n"
+
 			for _, station := range leg.ReisStop {
-				str += station.Naam + " " + station.Tijd.Format("15:04") + "  " + station.Spoor + "\n"
+				str += station.Naam + " " + station.Tijd.In(timeLocation).Format("15:04") + "  " + station.Spoor + "\n"
 
 			}
 

@@ -27,7 +27,7 @@ func main() {
 	//var m interface{}
 	botSetup := settings.GetSettings()
 	bot, err := tgbotapi.NewBotAPI(botSetup.Api)
-	anythinggoes.MOD["ping"] = anythinggoes.Ping
+	//anythinggoes.MOD["ping"] = anythinggoes.Ping
 	anythinggoes.MOD["store"] = anythinggoes.Store
 	anythinggoes.MOD["nsapi"] = anythinggoes.NSApi
 
@@ -53,12 +53,11 @@ func main() {
 		m := sql.Message{update.Message.Chat.ID, update.Message.MessageID, update.Message.From.UserName, update.Message.Text}
 		fmt.Println(reflect.TypeOf(update))
 		m.Save()
-		if update.Message.Chat.ID != -1001050885996 {
 			for _, Mod := range anythinggoes.MOD {
 				if Mod.Condition(update, bot) {
 					Mod.Run(update, bot)
 				}
 			}
-		}
+
 	}
 }
