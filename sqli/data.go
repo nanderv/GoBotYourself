@@ -2,11 +2,12 @@ package sql
 
 import (
 	"log"
+	"fmt"
 )
 
 type Data struct {
 	ID         int
-	indb       bool
+	Indb       bool
 	ChatID     int64
 	ModuleName string
 	Variable   string
@@ -20,7 +21,7 @@ func (d Data) Save() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if !d.indb {
+	if !d.Indb {
 		stmt, err := tx.Prepare("insert into Data(chatID, moduleName, variable, data) values(?, ?, ?, ?)")
 		defer stmt.Close()
 
@@ -48,8 +49,10 @@ func (d Data) Save() {
 	tx.Commit()
 }
 
-func (d Data) LoadData(moduleName string, chatID int64, variable string) Data {
+func (d Data) LoadData( chatID int64, moduleName string, variable string) Data {
 	db := Getdb().db
+	fmt.Print(moduleName)
+
 	stmt, err := db.Prepare("select id, data from Data where moduleName = ? AND chatID = ? AND variable = ?")
 	defer stmt.Close()
 
@@ -58,7 +61,7 @@ func (d Data) LoadData(moduleName string, chatID int64, variable string) Data {
 	}
 	var data string
 	var id int
-	err = stmt.QueryRow(moduleName, chatID, variable).Scan(&data, &id)
+	err = stmt.QueryRow(moduleName, chatID, variable).Scan(&id, &data)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -4,6 +4,7 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 	"bot/gofuckyourself"
 	"fmt"
+	"bot/sqli"
 )
 
 func store(update tgbotapi.Update, _ *tgbotapi.BotAPI) string {
@@ -15,9 +16,14 @@ func store(update tgbotapi.Update, _ *tgbotapi.BotAPI) string {
 	int2, _ := fmt.Sscanf(update.Message.Text, "/receive %v", &variablerec)
 
 	switch true{
-	case int1 == 2:        fmt.Println("store")
-	case int2 == 1:        fmt.Println("retreive")
+	case int1 == 2:
+		d := sql.Data{0, false, update.Message.Chat.ID, "store", variable, text}
+		d.Save()
+		return "Data stored"
+	case int2 == 1:   d := sql.Data{}.LoadData(update.Message.Chat.ID, Store.Name, variablerec)
+		return d.Data
 	}
+
 	return ""
 }
 

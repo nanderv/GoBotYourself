@@ -18,6 +18,8 @@ func (dba DB) Emptydb() {
 
 	sqlStmt := `
 	create table IF NOT EXISTS Messages (id integer not null primary key, messageID integer not null, chatID integer not Null, userName text, content text);
+	create table IF NOT EXISTS Data (id integer not null primary key, chatID integer not Null, moduleName text, variable text, data text);
+
 	`
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
