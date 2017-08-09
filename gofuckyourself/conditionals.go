@@ -5,10 +5,10 @@ import (
 	"strings"
 )
 
-func Contains(check string) func(tgbotapi.Update, *tgbotapi.BotAPI) bool{
-	return func(u tgbotapi.Update, bot *tgbotapi.BotAPI) bool{
-		for _, field := range strings.Fields(u.Message.Text){
-			if field ==check{
+func Contains(check string) func(tgbotapi.Update, *tgbotapi.BotAPI) bool {
+	return func(u tgbotapi.Update, _ *tgbotapi.BotAPI) bool {
+		for _, field := range strings.Fields(u.Message.Text) {
+			if field == check {
 				return true
 			}
 		}
