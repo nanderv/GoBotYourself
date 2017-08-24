@@ -1,0 +1,27 @@
+CREATE TABLE Updates
+(
+  UpdateId INT,
+  MessageId INT,
+  FromId INT,
+  Date INT,
+  ChatId BIGINT,
+  ReplyToMessageID INT,
+  EditDate INT,
+  ForwardFromChatId INT,
+  ForwardFromMessageId INT,
+  Text TEXT,
+  PhotoFileId TEXT,
+  DocumentFileId TEXT,
+  DocumentFileName TEXT,
+  Caption TEXT,
+  NewChatTitle TEXT,
+  PinnedMessageId INT,
+  AudioFileId TEXT,
+  AudioFileName TEXT,
+  VideoFileId TEXT,
+  VoiceFileId TEXT,
+  ContactUserId INT,
+  LocationLongitude FLOAT,
+  LocationLatitude FLOAT,
+  StickerFileId TEXT
+);

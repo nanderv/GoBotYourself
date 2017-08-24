@@ -44,6 +44,8 @@ func StoreUpdate(u tgbotapi.Update) {
 	default:
 		return
 	}
+
+	// concentrate important info
 	toStore.UpdateId = u.UpdateID
 	toStore.MessageId = message.MessageID
 	toStore.FromId = message.From.ID
@@ -100,6 +102,7 @@ func StoreUpdate(u tgbotapi.Update) {
 		toStore.StickerFileId = message.Sticker.FileID
 	}
 
+	// Insert into db
 	stmt = "INSERT INTO Updates(UpdateId, MessageId, FromId, Date, ChatId, ReplyToMessageID, EditDate, ForwardFromChatId, ForwardFromMessageId, Text, PhotoFileId, DocumentFileId, DocumentFileName, Caption, NewChatTitle, PinnedMessageId, AudioFileId, AudioFileName, VideoFileId, VoiceFileId, ContactUserId, LocationLongitude, LocationLatitude, StickerFileId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"
 	db := Getdb().db
 

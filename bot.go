@@ -34,7 +34,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	//bot.Debug = true
+	bot.Debug = false
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -47,14 +47,12 @@ func main() {
 		if update.Message == nil {
 			continue
 		}
-
-		m := sql.Message{update.Message.Chat.ID, update.Message.MessageID, update.Message.From.UserName, update.Message.Text}
-		m.Save()
-			for _, Mod := range anythinggoes.MOD {
-				if Mod.Condition(update, bot) {
-					Mod.Run(update, bot)
-				}
+		sql.StoreUpdate(update)
+		for _, Mod := range anythinggoes.MOD {
+			if Mod.Condition(update, bot) {
+				Mod.Run(update, bot)
 			}
+		}
 
 	}
 }
